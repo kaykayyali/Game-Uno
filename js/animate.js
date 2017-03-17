@@ -6,7 +6,11 @@ console.log("Animate.js is LOADED");
 //this js file is for the hero constructor and associated sprites, and movement functions
 
 
-var dude, runsprites, bgImg, mapWidth = 8520;
+var dude, runsprites, bgImg, bgFloor, mapWidth = 8520;
+var Gravity = 1;
+var platform;
+var platform_two;
+var platform_three;
 
 function Hero (name) {
   this.name = name;
@@ -43,15 +47,15 @@ function Hero (name) {
       this.xspeed = 0;
     }
 
-    if (this.y > height - 80) {
-      this.y = height - 80;
-      this.gravity = 0;
-    }
+    // if (this.y > height - 80) {
+    //   this.y = height - 80;
+    //   this.gravity = 0;
+    // }
 
-    if (this.y < 40) {
-      this.y = 40;
-      this.gravity = 0;
-    }
+    // if (this.y < 20) {
+    //   this.y = 30;
+    //   this.gravity = 0;
+    // }
 
     dude.runsprites.position.x = this.x;
     dude.runsprites.position.y = this.y;
@@ -69,7 +73,20 @@ function setup () {
   dude.runsprites.addAnimation("crouching", "./img/hero/heroguy_crouch1.png");
   dude.runsprites.addAnimation("running", "./img/hero/heroguy1.png", "./img/hero/heroguy8.png");
   dude.runsprites.addAnimation("spinning", "./img/hero/heroguy1.png", "./img/hero/heroguy8.png");
+  dude.runsprites.debug = true;
   bgImg = loadImage("./img/bg.jpg");
+  bgFloor = createSprite(0, 600);
+  bgFloor.addImage(loadImage("img/bgFloor.png"));
+  bgFloor.debug = true;
+  platform = createSprite(800, 400);
+  platform.addImage(loadImage("img/platform.png"));
+  platform.debug = true;
+  platform_two = createSprite(1200, 200);
+  platform_two.addImage(loadImage("img/platform.png"));
+  platform_two.debug = true;
+  platform_three = createSprite(1600, 100);
+  platform_three.addImage(loadImage("img/platform.png"));
+  platform_three.debug = true;
   // dude.setCollider("circle", 0,0,20);
 
 }
@@ -80,12 +97,34 @@ function draw () {
   clear();
   image(bgImg, -400,0);
   dude.update();
-  dude.show();
+  // dude.show();
   drawSprites();
   text(keyCode, 33,65);
   camera.position.x = dude.x;
   camera.position.y = height/2;
   camera.zoom = 1;
+
+
+  if(bgFloor.overlapPixel(dude.x, dude.y + 30)==true) {
+    console.log("Overlap detected");
+    dude.gravity = 0;
+    dude.y -= 10;
+  }
+  if(platform.overlapPixel(dude.x, dude.y + 30)==true) {
+    console.log("Overlap detected");
+    dude.gravity = 0;
+    dude.y -= 10;
+  }
+  if(platform_two.overlapPixel(dude.x, dude.y + 30)==true) {
+    console.log("Overlap detected");
+    dude.gravity = 0;
+    dude.y -= 10;
+  }
+  if(platform_three.overlapPixel(dude.x, dude.y + 30)==true) {
+    console.log("Overlap detected");
+    dude.gravity = 0;
+    dude.y -= 10;
+  }
 
   if (keyDown(UP_ARROW)) {
     dude.dir(0, dude.jump);
@@ -108,36 +147,8 @@ function draw () {
     dude.runsprites.changeAnimation("running");
     dude.runsprites.mirrorX(-1);
   }
-  // if (gameStarted == true){
-  // setTimeout(function (){
-  //
-  //   camera.position.y = dude.y;
-  //   camera.zoom = 4;
-  //
-  // }, 3000);
 }
 
-  // function keyPressed () {
-      // if (keyDown(UP_ARROW)) {
-      //   dude.dir(0, dude.jump);
-      //   // dude.dir(0, dude.gravity);
-      //   dude.runsprites.scale += 0.05;
-      // }
-      // if (keyDown(DOWN_ARROW)) {
-      //   dude.dir(0, 3);
-      //   dude.runsprites.scale -= 0.05;
-      // }
-      // if (keyDown(RIGHT_ARROW)) {
-      //   dude.dir(7, 0);
-      //   dude.runsprites.changeAnimation("running");
-      //   dude.runsprites.mirrorX(1);
-      // }
-      // if (keyDown(LEFT_ARROW)) {
-      //   dude.dir(-7, 0);
-      //   dude.runsprites.changeAnimation("running");
-      //   dude.runsprites.mirrorX(-1);
-      // }
-  // } //ends the keyPressed function
 
   function keyReleased() {
     dude.xspeed = 0;
